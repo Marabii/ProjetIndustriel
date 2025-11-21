@@ -1,0 +1,135 @@
+{
+  "scraped_at": "2025-11-21T11:45:25.510Z",
+  "total_profiles": 1,
+  "profiles": [
+    {
+      "url": "https://www.linkedin.com/in/nathalie-garcia-1b8ab4320/details/experience",
+      "success": true,
+      "experiences": [
+        {
+          "index": 0,
+          "role": "Responsable clientèle chez Léko",
+          "company": "VALORIE",
+          "position": "Permanent",
+          "duration": "May 2023 - Present · 2 yrs 7 mos",
+          "location": "Paris et périphérie · Hybrid",
+          "description": null,
+          "skills": null,
+          "has_children": false
+        },
+        {
+          "index": 1,
+          "role": "Gestionnaire des Opérations Professionnelles",
+          "company": "Ecologic",
+          "position": "Permanent",
+          "duration": "May 2017 - May 2023 · 6 yrs 1 mo",
+          "location": "Guyancourt, Île-de-France, France · Hybrid",
+          "description": null,
+          "skills": "Skills: Travail d’équipe · Suivi client · Satisfaction client · Compétences administrativesSkills: Travail d’équipe · Suivi client · Satisfaction client · Compétences administratives",
+          "has_children": false
+        },
+        {
+          "index": 2,
+          "role": "Assistante de direction",
+          "company": "Fédération des conseils de Parents d'élèves - FCPE",
+          "position": "Permanent",
+          "duration": "2014 - 2016 · 2 yrs",
+          "location": "Mont-de-Marsan, Nouvelle-Aquitaine, France · On-site",
+          "description": null,
+          "skills": "Skills: Compétences administratives · Assistance administrative de directionSkills: Compétences administratives · Assistance administrative de direction",
+          "has_children": false
+        },
+        {
+          "index": 3,
+          "role": "Conseillère de vente",
+          "company": "ORCHESTRA",
+          "position": "Permanent",
+          "duration": "2014 - 2014 · Less than a year",
+          "location": "Mont-de-Marsan, Nouvelle-Aquitaine, France · On-site",
+          "description": null,
+          "skills": "Skills: Liaison avec la clientèle · Compétences administrativesSkills: Liaison avec la clientèle · Compétences administratives",
+          "has_children": false
+        },
+        {
+          "index": 4,
+          "role": "Conseillère de vente",
+          "company": "Jofrati",
+          "position": "Permanent",
+          "duration": "2013 - 2014 · 1 yr",
+          "location": "Mont-de-Marsan, Nouvelle-Aquitaine, France · On-site",
+          "description": null,
+          "skills": "Skills: Liaison avec la clientèle · Compétences administrativesSkills: Liaison avec la clientèle · Compétences administratives",
+          "has_children": false
+        },
+        {
+          "index": 5,
+          "role": "Création d'entreprise",
+          "company": "La Boutique des Pitchouns",
+          "position": "Self-employed",
+          "duration": "2011 - 2013 · 2 yrs",
+          "location": "Mont-de-Marsan, Nouvelle-Aquitaine, France · On-site",
+          "description": null,
+          "skills": "Skills: Liaison avec la clientèle · Compétences administratives · Assistance administrative de directionSkills: Liaison avec la clientèle · Compétences administratives · Assistance administrative de direction",
+          "has_children": false
+        },
+        {
+          "index": 6,
+          "role": "Assistante de direction",
+          "company": "CABINET CONSEIL JEAN MICHEL POURRIER",
+          "position": "Permanent",
+          "duration": "2003 - 2007 · 4 yrs",
+          "location": "Luxeuil-les-Bains, Bourgogne-Franche-Comté, France · On-site",
+          "description": null,
+          "skills": "Skills: Liaison avec la clientèle · Compétences administratives · Assistance administrative de directionSkills: Liaison avec la clientèle · Compétences administratives · Assistance administrative de direction",
+          "has_children": false
+        },
+        {
+          "index": 7,
+          "role": "Assistante de direction",
+          "company": "Groupe A. D. C.",
+          "position": "Permanent",
+          "duration": "2002 - 2003 · 1 yr",
+          "location": "Ville de Paris, Île-de-France, France · On-site",
+          "description": null,
+          "skills": "Skills: Compétences administratives · Assistance administrative de directionSkills: Compétences administratives · Assistance administrative de direction",
+          "has_children": false
+        },
+        {
+          "index": 8,
+          "role": "Secrétaire Assistante",
+          "company": "C. R. O. M.",
+          "position": "Permanent",
+          "duration": "2001 - 2002 · 1 yr",
+          "location": "Châtenay-Malabry, Île-de-France, France · On-site",
+          "description": null,
+          "skills": "Skills: Compétences administratives · Assistance administrative de directionSkills: Compétences administratives · Assistance administrative de direction",
+          "has_children": false
+        },
+        {
+          "index": 9,
+          "role": "Assistante du Directeur Régional",
+          "company": "JCDecaux",
+          "position": "Permanent",
+          "duration": "2000 - 2001 · 1 yr",
+          "location": "Montreuil, Île-de-France, France · On-site",
+          "description": null,
+          "skills": "Skills: Compétences administratives · Assistance administrative de directionSkills: Compétences administratives · Assistance administrative de direction",
+          "has_children": false
+        },
+        {
+          "index": 10,
+          "role": "Assistante à la Direction Financière",
+          "company": "5àsec",
+          "position": "Permanent",
+          "duration": "1999 - 2000 · 1 yr",
+          "location": "Marseille, Provence-Alpes-Côte d’Azur, France · On-site",
+          "description": null,
+          "skills": "Skills: Compétences administratives · Assistance administrative de directionSkills: Compétences administratives · Assistance administrative de direction",
+          "has_children": false
+        }
+      ],
+      "total_experiences": 11,
+      "error": null
+    }
+  ]
+}
