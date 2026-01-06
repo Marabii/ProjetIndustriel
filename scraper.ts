@@ -22,6 +22,7 @@ interface Config {
 }
 
 interface ExperienceData {
+  "Nom": string;
   "Profil": string;
   "Titre du poste": string;
   "Entreprise et type d'emploi": string;
@@ -32,6 +33,7 @@ interface ExperienceData {
 }
 
 interface EducationData {
+  "Nom": string;
   "Profil": string;
   "Établissement": string;
   "Diplôme": string;
@@ -100,10 +102,32 @@ async function isChildElement(
   return isChild;
 }
 
+// Extract profile name from profile page
+async function extractProfileName(page: Page, profileUrl: string): Promise<string> {
+  console.log(`[INFO] Extracting name from: ${profileUrl}`);
+
+  await page.goto(profileUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await delay(2000);
+
+  try {
+    const nameElement = await page.$(".artdeco-card h1");
+    if (nameElement) {
+      const name = await page.evaluate((el) => el.textContent?.trim() || "", nameElement);
+      console.log(`[INFO] Found name: ${name}`);
+      return name;
+    }
+  } catch (error) {
+    console.error("[ERROR] Failed to extract profile name:", error);
+  }
+
+  return "";
+}
+
 // Scrape experience from a single profile
 async function scrapeExperience(
   page: Page,
   profileUrl: string,
+  profileName: string,
   config: Config
 ): Promise<ExperienceData[]> {
   const experienceData: ExperienceData[] = [];
@@ -225,6 +249,7 @@ async function scrapeExperience(
       }
 
       experienceData.push({
+        "Nom": profileName,
         "Profil": profileUrl,
         "Titre du poste": jobTitle,
         "Entreprise et type d'emploi": companyAndType,
@@ -247,7 +272,7 @@ async function scrapeExperience(
 }
 
 // Scrape education from a single profile
-async function scrapeEducation(page: Page, profileUrl: string, config: Config): Promise<EducationData[]> {
+async function scrapeEducation(page: Page, profileUrl: string, profileName: string, config: Config): Promise<EducationData[]> {
   const educationData: EducationData[] = [];
 
   // Navigate to education page
@@ -299,6 +324,7 @@ async function scrapeEducation(page: Page, profileUrl: string, config: Config): 
       }
 
       educationData.push({
+        "Nom": profileName,
         "Profil": profileUrl,
         "Établissement": institution,
         "Diplôme": diploma,
@@ -375,9 +401,20 @@ async function main() {
   for (const profileUrl of config.profiles) {
     console.log(`\n[INFO] Processing profile: ${profileUrl}`);
 
+    // Extract profile name
+    let profileName = "";
+    try {
+      profileName = await extractProfileName(page, profileUrl);
+    } catch (error) {
+      console.error(`[ERROR] Failed to extract name from ${profileUrl}:`, error);
+    }
+
+    // Small delay after name extraction
+    await delay(2000);
+
     // Scrape experience
     try {
-      const experienceData = await scrapeExperience(page, profileUrl, config);
+      const experienceData = await scrapeExperience(page, profileUrl, profileName, config);
       allExperienceData.push(...experienceData);
       console.log(
         `[INFO] Extracted ${experienceData.length} experience items from this profile`
@@ -391,7 +428,7 @@ async function main() {
 
     // Scrape education
     try {
-      const educationData = await scrapeEducation(page, profileUrl, config);
+      const educationData = await scrapeEducation(page, profileUrl, profileName, config);
       allEducationData.push(...educationData);
       console.log(
         `[INFO] Extracted ${educationData.length} education items from this profile`
