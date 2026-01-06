@@ -4,7 +4,9 @@
   "description": "LinkedIn experience scraper using Puppeteer",
   "main": "scraper.js",
   "scripts": {
-    "start": "node scraper.js"
+    "build": "tsc",
+    "start": "node scraper.js",
+    "dev": "ts-node scraper.ts"
   },
   "keywords": [
     "linkedin",
@@ -14,6 +16,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^24.23.0"
+    "puppeteer": "^24.23.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2"
   }
 }

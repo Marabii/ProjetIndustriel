@@ -1,16 +1,20 @@
 {
-  "urls": [
-    "https://www.linkedin.com/in/nathalie-garcia-1b8ab4320/details/experience"
+  "profiles": [
+    "https://www.linkedin.com/in/theresia-leko-411b1316b/",
+    "https://www.linkedin.com/in/jean-pierre-rakoutz/"
   ],
   "selectors": {
-    "experienceItem": "li[id^=profilePagedListComponent]",
-    "role": "li[id^=profilePagedListComponent] .display-flex.align-items-center.mr1.hoverable-link-text.t-bold span",
-    "companyAndDetails": ".optional-action-target-wrapper.display-flex.flex-column.full-width > .t-14.t-normal span:first-of-type",
-    "skills_and_description": "li[id^=profilePagedListComponent] .display-flex.flex-column.align-self-center.flex-grow-1 > div:last-of-type > ul > li ul li .display-flex.align-items-center.t-14.t-normal.t-black"
+    "experience": {
+      "experienceItem": "li[id^=profilePagedListComponent]",
+      "jobTitle": "li[id^=profilePagedListComponent] .display-flex.align-items-center.mr1.hoverable-link-text.t-bold span",
+      "details": ".optional-action-target-wrapper.display-flex.flex-column.full-width > .t-14.t-normal span:first-of-type",
+      "description": "li[id^=profilePagedListComponent] .display-flex.flex-column.align-self-center.flex-grow-1 > div:last-of-type > ul > li ul li"
+    },
+    "education": {
+      "educationItem": "li[id^=profilePagedListComponent]",
+      "institution": "li[id^=profilePagedListComponent] .display-flex.align-items-center.mr1.hoverable-link-text.t-bold span",
+      "details": ".optional-action-target-wrapper.display-flex.flex-column.full-width > .t-14.t-normal span:first-of-type"
+    }
   },
-  "options": {
-    "headless": false,
-    "timeout": 30000,
-    "navigationTimeout": 30000
-  }
+  "outputFile": "linkedin_data.xlsx"
 }
