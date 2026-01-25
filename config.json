@@ -4,8 +4,8 @@
   "selectors": {
     "company": {
       "employeesLink": ".artdeco-card a[href^=\"/search/results/people/?currentCompany=\"]",
-      "profileLink": "a:has(.EntityPhoto-circle-3-ghost-person, .presence-entity)",
-      "nextButton": ".artdeco-pagination button[aria-label=\"Next\"]"
+      "profileLink": "a[data-view-name=\"search-result-lockup-title\"][href*=\"/in/\"]",
+      "nextButton": "button[data-testid^=\"pagination-controls-next-button-\"]"
     },
     "experience": {
       "experienceItem": "li[id^=profilePagedListComponent]",
