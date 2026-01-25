@@ -1,9 +1,12 @@
 {
-  "profiles": [
-    "https://www.linkedin.com/in/theresia-leko-411b1316b/",
-    "https://www.linkedin.com/in/jean-pierre-rakoutz/"
-  ],
+  "companies": ["https://www.linkedin.com/company/murex/posts/?feedView=all"],
+  "maxEmployeesPerCompany": 11,
   "selectors": {
+    "company": {
+      "employeesLink": ".artdeco-card a[href^=\"/search/results/people/?currentCompany=\"]",
+      "profileLink": "a:has(.EntityPhoto-circle-3-ghost-person, .presence-entity)",
+      "nextButton": ".artdeco-pagination button[aria-label=\"Next\"]"
+    },
     "experience": {
       "experienceItem": "li[id^=profilePagedListComponent]",
       "jobTitle": "li[id^=profilePagedListComponent] .display-flex.align-items-center.mr1.hoverable-link-text.t-bold span",

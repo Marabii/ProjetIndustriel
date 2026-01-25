@@ -4,8 +4,14 @@ import * as XLSX from "xlsx";
 import * as readline from "readline";
 
 interface Config {
-  profiles: string[];
+  companies: string[];
+  maxEmployeesPerCompany: number;
   selectors: {
+    company: {
+      employeesLink: string;
+      profileLink: string;
+      nextButton: string;
+    };
     experience: {
       experienceItem: string;
       jobTitle: string;
@@ -100,6 +106,97 @@ async function isChildElement(
     selector
   );
   return isChild;
+}
+
+// Extract employee profile links from company page
+async function extractEmployeeLinks(page: Page, companyUrl: string, maxEmployees: number, config: Config): Promise<string[]> {
+  const profileLinks: string[] = [];
+
+  console.log(`[INFO] Navigating to company page: ${companyUrl}`);
+  await page.goto(companyUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await delay(3000);
+
+  // Click on "See all employees" link
+  console.log(`[INFO] Looking for employees link...`);
+  try {
+    const employeesLink = await page.$(config.selectors.company.employeesLink);
+    if (!employeesLink) {
+      console.error('[ERROR] Could not find employees link');
+      return profileLinks;
+    }
+
+    console.log(`[INFO] Clicking on employees link...`);
+    await employeesLink.click();
+    await delay(5000); // Wait for the employees page to load
+  } catch (error) {
+    console.error('[ERROR] Failed to navigate to employees page:', error);
+    return profileLinks;
+  }
+
+  // Extract profile links with pagination
+  let currentPage = 1;
+  while (profileLinks.length < maxEmployees) {
+    console.log(`[INFO] Extracting profiles from page ${currentPage}...`);
+
+    // Extract profile links from current page
+    const linksOnPage = await page.evaluate((selector) => {
+      const elements = document.querySelectorAll(selector);
+      const links = Array.from(elements)
+        .map(el => el.getAttribute("href"))
+        .filter(href => href && (href.startsWith('/in/') || href.includes('/in/')));
+      return links;
+    }, config.selectors.company.profileLink);
+
+    console.log(`[INFO] Found ${linksOnPage.length} profiles on page ${currentPage}`);
+
+    // Add links to our collection (convert relative URLs to absolute and remove query params)
+    for (const link of linksOnPage) {
+      if (link && profileLinks.length < maxEmployees) {
+        // Handle both absolute and relative URLs, remove query parameters
+        let fullUrl: string;
+        if (link.startsWith('http')) {
+          fullUrl = link.split('?')[0]; // Already absolute, just remove query params
+        } else {
+          fullUrl = `https://www.linkedin.com${link.split('?')[0]}`; // Convert relative to absolute
+        }
+        if (!profileLinks.includes(fullUrl)) {
+          profileLinks.push(fullUrl);
+        }
+      }
+    }
+
+    // Check if we have enough profiles
+    if (profileLinks.length >= maxEmployees) {
+      console.log(`[INFO] Reached maximum employees limit (${maxEmployees})`);
+      break;
+    }
+
+    // Try to click "Next" button
+    try {
+      const nextButton = await page.$(config.selectors.company.nextButton);
+      if (!nextButton) {
+        console.log(`[INFO] No more pages available`);
+        break;
+      }
+
+      const isDisabled = await page.evaluate(btn => btn.hasAttribute('disabled'), nextButton);
+      if (isDisabled) {
+        console.log(`[INFO] Next button is disabled, no more pages`);
+        break;
+      }
+
+      console.log(`[INFO] Moving to next page...`);
+      await nextButton.click();
+      await delay(3000); // Wait for next page to load
+      currentPage++;
+    } catch (error) {
+      console.log(`[INFO] No more pages or error navigating: ${error}`);
+      break;
+    }
+  }
+
+  console.log(`[INFO] Total unique profiles found: ${profileLinks.length}`);
+  return profileLinks.slice(0, maxEmployees);
 }
 
 // Extract profile name from profile page
@@ -367,7 +464,7 @@ async function main() {
 
   // Load configuration
   const config = loadConfig();
-  console.log(`[INFO] Loaded ${config.profiles.length} profiles from config`);
+  console.log(`[INFO] Loaded ${config.companies.length} companies from config`);
 
   // Launch browser
   const browser: Browser = await puppeteer.launch({
@@ -398,47 +495,71 @@ async function main() {
   const allExperienceData: ExperienceData[] = [];
   const allEducationData: EducationData[] = [];
 
-  for (const profileUrl of config.profiles) {
-    console.log(`\n[INFO] Processing profile: ${profileUrl}`);
+  // Iterate through each company
+  for (const companyUrl of config.companies) {
+    console.log(`\n${"=".repeat(60)}`);
+    console.log(`[INFO] Processing company: ${companyUrl}`);
+    console.log(`${"=".repeat(60)}\n`);
 
-    // Extract profile name
-    let profileName = "";
+    // Extract employee profile links
+    let profileUrls: string[] = [];
     try {
-      profileName = await extractProfileName(page, profileUrl);
+      profileUrls = await extractEmployeeLinks(page, companyUrl, config.maxEmployeesPerCompany, config);
+      console.log(`[INFO] Found ${profileUrls.length} employee profiles to scrape`);
     } catch (error) {
-      console.error(`[ERROR] Failed to extract name from ${profileUrl}:`, error);
+      console.error(`[ERROR] Failed to extract employees from ${companyUrl}:`, error);
+      continue;
     }
 
-    // Small delay after name extraction
+    // Small delay before processing profiles
     await delay(2000);
 
-    // Scrape experience
-    try {
-      const experienceData = await scrapeExperience(page, profileUrl, profileName, config);
-      allExperienceData.push(...experienceData);
-      console.log(
-        `[INFO] Extracted ${experienceData.length} experience items from this profile`
-      );
-    } catch (error) {
-      console.error(`[ERROR] Failed to scrape experience from ${profileUrl}:`, error);
+    // Process each employee profile
+    for (let i = 0; i < profileUrls.length; i++) {
+      const profileUrl = profileUrls[i];
+      console.log(`\n[INFO] Processing employee ${i + 1}/${profileUrls.length}: ${profileUrl}`);
+
+      // Extract profile name
+      let profileName = "";
+      try {
+        profileName = await extractProfileName(page, profileUrl);
+      } catch (error) {
+        console.error(`[ERROR] Failed to extract name from ${profileUrl}:`, error);
+      }
+
+      // Small delay after name extraction
+      await delay(2000);
+
+      // Scrape experience
+      try {
+        const experienceData = await scrapeExperience(page, profileUrl, profileName, config);
+        allExperienceData.push(...experienceData);
+        console.log(
+          `[INFO] Extracted ${experienceData.length} experience items from this profile`
+        );
+      } catch (error) {
+        console.error(`[ERROR] Failed to scrape experience from ${profileUrl}:`, error);
+      }
+
+      // Small delay between sections
+      await delay(2000);
+
+      // Scrape education
+      try {
+        const educationData = await scrapeEducation(page, profileUrl, profileName, config);
+        allEducationData.push(...educationData);
+        console.log(
+          `[INFO] Extracted ${educationData.length} education items from this profile`
+        );
+      } catch (error) {
+        console.error(`[ERROR] Failed to scrape education from ${profileUrl}:`, error);
+      }
+
+      // Small delay between profiles
+      await delay(2000);
     }
 
-    // Small delay between sections
-    await delay(2000);
-
-    // Scrape education
-    try {
-      const educationData = await scrapeEducation(page, profileUrl, profileName, config);
-      allEducationData.push(...educationData);
-      console.log(
-        `[INFO] Extracted ${educationData.length} education items from this profile`
-      );
-    } catch (error) {
-      console.error(`[ERROR] Failed to scrape education from ${profileUrl}:`, error);
-    }
-
-    // Small delay between profiles
-    await delay(2000);
+    console.log(`\n[INFO] Completed scraping ${profileUrls.length} employees from this company`);
   }
 
   // Export data
